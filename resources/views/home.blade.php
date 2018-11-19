@@ -2,7 +2,10 @@
 
 @section('content')
   <h4 class="my-3">Wydajność zamówień</h4>
-  {{dd($orders)}}
+  <pre>
+  {{-- {{dd($orders)}} --}}
+  {{-- {{ var_dump($orders) }} --}}
+</pre>
 
   <table class="table">
   <thead class="thead-light">
@@ -18,17 +21,19 @@
     </tr>
   </thead>
   <tbody>
+    @foreach ($orders as $order)
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
+      <th scope="row">{{$order->id_order}}</th>
+      <td>{{$order->firstname}} {{$order->lastname}}</td>
+      <td>{{$order->date_add}}</td>
       <td>@mdo</td>
       <td>Mark</td>
       <td>Otto</td>
       <td>@mdo</td>
       <td>Otto</td>
     </tr>
-    <tr>
+    @endforeach
+    {{-- <tr>
       <th scope="row">2</th>
       <td>Jacob</td>
       <td>Thornton</td>
@@ -39,7 +44,7 @@
       <td>Larry</td>
       <td>the Bird</td>
       <td>@twitter</td>
-    </tr>
+    </tr> --}}
   </tbody>
 </table>
 
