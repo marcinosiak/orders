@@ -23,11 +23,20 @@
   <tbody>
     @foreach ($orders as $order)
     <tr>
-      <th scope="row">{{$order->id_order}}</th>
-      <td>{{$order->firstname}} {{$order->lastname}}</td>
-      <td>{{$order->date_add}}</td>
-      <td>@mdo</td>
-      <td>Mark</td>
+      <th scope="row">{{$order['zamowienie']}}</th>
+      <td>
+        @if ($order['pracownik'] != " ") {{ $order['pracownik'] }} <br> @endif
+        @if ($order['pracownik_2']) {{ $order['pracownik_2'] }} <br> @endif
+        @if ($order['pracownik_3']) {{ $order['pracownik_3'] }} <br> @endif
+      </td>
+      <td>{{$order['data']}}</td>
+      <td>
+        {{$order['start']}}
+        @if ($order['opoznienie']) ({{$order['opoznienie']}} min) @endif
+      </td>
+      <td>
+        @if ($order['przygotowanie_do_wydania']) {{$order['przygotowanie_do_wydania']}} min @endif
+      </td>
       <td>Otto</td>
       <td>@mdo</td>
       <td>Otto</td>
