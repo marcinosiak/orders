@@ -116,9 +116,9 @@ class Order
       $data = \Carbon\Carbon::parse($first_status->date_add);
 
       $any_status = $this->statusesExist([
-                              config('statusy.W_TRAKCIE_PRZETWARZANIA'),
+                              config('statusy.W_TRAKCIE_PRZETWARZANIA_OCZEKIWANIE_NA_PLATNOSC_BM'),
                               config('statusy.W_TRAKCIE_PRZETWARZANIA_NOWE_NIEZATWIERDZONE'),
-                              config('statusy.W_TRAKCIE_PRZETWARZANIA_OCZEKIWANIE_NA_PLATNOSC_BM')
+                              config('statusy.W_TRAKCIE_PRZETWARZANIA')
                     ], $id);
 
       if ($any_status != null) {
@@ -129,7 +129,6 @@ class Order
         $start = \Carbon\Carbon::parse($any_status->date_add);
         // Różnica w minutach
         $temp_order['opoznienie'] = $data->diffInminutes($start);
-        // $temp_order['przygotowanie_do_wydania'] =  Kompletowanie na magazynie - W trakcie przetwarzania
       }
       else {
         $temp_order['start'] = "brak";
@@ -137,6 +136,7 @@ class Order
         $temp_order['opoznienie'] = null;
       }
 
+      // Przygotowanie do wydania = obliczane według statusów Kompletowanie na magazynie - W trakcie przetwarzania
       $kompketowanie_status = $this->getAnyStatus($id, config('statusy.KOMPLETOWANIE_NA_MAGAZYNIE'));
 
       if ($kompketowanie_status != null) {
@@ -152,6 +152,18 @@ class Order
         $temp_order['pracownik_3'] = null;
       }
 
+      // Wydanie = obliczane według statusów "Wydane - Kompletowanie na magazynie"
+      $wydanie_status = $this->getAnyStatus($id, config('statusy.WYDANIE'));
+
+      if ($wydanie_status != null) {
+        $wydanie = \Carbon\Carbon::parse($wydanie_status->date_add);
+
+        $kompketowanie = isset($kompketowanie) ? $kompketowanie : 0;
+        $temp_order['wydanie'] = $wydanie->diffInminutes($kompketowanie);
+      }
+      else {
+        $temp_order['wydanie'] = null;
+      }
 
       return $temp_order;
     }

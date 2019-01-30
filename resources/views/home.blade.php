@@ -37,7 +37,9 @@
       <td>
         @if ($order['przygotowanie_do_wydania']) {{$order['przygotowanie_do_wydania']}} min @endif
       </td>
-      <td>Otto</td>
+      <td>
+        @if ($order['wydanie']) {{$order['wydanie']}} min @endif
+      </td>
       <td>@mdo</td>
       <td>Otto</td>
     </tr>
