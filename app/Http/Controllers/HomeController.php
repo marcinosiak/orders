@@ -25,7 +25,8 @@ class HomeController extends Controller
       $ord = new Order($query);
 
       $id_all_orders = $ord->getIdAllOrders();
-
+// dd($ord->getSumOfRepeatedStatuses(config('statusy.KOMPLETOWANIE_NA_MAGAZYNIE'), config('statusy.WYDANIE'), 15));
+// dd($ord->getFirstStatusBehind(config('statusy.PRZETWARZANIE_PO_WYDANIU'), 15));
       $orders = [];
       $temp_order = [];
 
