@@ -16,3 +16,5 @@
 // });
 
 Route::get('/', 'HomeController@home');
+
+Route::post('/zakres', 'HomeController@zakres');

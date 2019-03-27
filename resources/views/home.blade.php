@@ -2,10 +2,67 @@
 
 @section('content')
   <h4 class="my-3">Wydajność zamówień</h4>
-  <pre>
-  {{-- {{dd($orders)}} --}}
-  {{-- {{ var_dump($orders) }} --}}
-</pre>
+
+  <form action="{{url('zakres')}}" method="post">
+    <div class="input-append date form_date">
+        <label for="from_date">data od:</label>
+        <input size="13" type="text" value="" class="dtp" name="from_date" id="from_date" data-date-format="yyyy-mm-dd hh:ii:ss">
+        <span class="add-on dtp"><i class="icon-th"></i></span>
+    </div>
+
+    <div class="input-append date to_date">
+        <label for="data1">data do:</label>
+        <input size="13" type="text" value="" class="dtp" name="to_date" id="to_date" data-date-format="yyyy-mm-dd hh:ii:ss">
+        <span class="add-on dtp"><i class="icon-th"></i></span>
+    </div>
+
+    <input type="submit" class="btn btn-primary btn-sm btn-szukaj" value="Szukaj zamówień">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+  </form>
+
+  <script type="text/javascript">
+      $(function () {
+          //https://www.malot.fr/bootstrap-datetimepicker/index.php
+          $('.form_date').datetimepicker({
+              language:  'pl',
+              format: 'yyyy-mm-dd hh:ii:ss',
+              weekStart: 1,
+              todayBtn:  1,
+              autoclose: 1,
+              todayHighlight: 2,
+              startView: 2,
+              minView: 0,
+              forceParse: 0,
+              pickerPosition: "bottom-left"
+            });
+
+            $('.to_date').datetimepicker({
+                language:  'pl',
+                format: 'yyyy-mm-dd hh:ii:ss',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 2,
+                startView: 2,
+                minView: 0,
+                forceParse: 0,
+                pickerPosition: "bottom-left"
+              });
+
+              var last_x_days = moment().subtract(7, 'days').format('YYYY-MM-DD HH:mm:ss');
+              var now = moment().format('YYYY-MM-DD HH:mm:ss');
+
+              $('#from_date').val(last_x_days);
+              $('#to_date').val(now);
+
+              // https://momentjs.com/
+              // console.log(now);
+              // console.log(last_x_days);
+      });
+
+      // console.log(moment().format());
+  </script>
+
 
   <table class="table">
   <thead class="thead-light">
