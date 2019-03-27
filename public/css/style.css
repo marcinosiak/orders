@@ -1,0 +1,12 @@
+input.dtp, span.dtp {
+	height: 30px;
+}
+
+.input-append .add-on {
+  height: 30px;
+  line-height: 22px;
+}
+
+.btn-szukaj {
+	margin-top: 18px;
+}
