@@ -2,6 +2,9 @@
 
 namespace App;
 
+use App\BusinessDaysCalculator;
+use DateTime;
+
 class Order
 {
   // Wszystkie zamówienia z bazy ze wszystkimi statusami
@@ -153,10 +156,11 @@ class Order
       for ($i = 0; $i < $size; $i += 2) {
         $time_first_status = \Carbon\Carbon::parse($array_of_statuses[$i]->date_add);
         $time_second_status = \Carbon\Carbon::parse($array_of_statuses[$i+1]->date_add);
-        $time += $time_first_status->diffInminutes($time_second_status);
+        // $time += $time_first_status->diffInminutes($time_second_status);
+        $time += BusinessDaysCalculator::getWorkingHoursInSeconds($time_first_status, $time_second_status)/60;
       }
 
-      return $time;
+      return round($time);
     }
 
     /**
@@ -205,7 +209,8 @@ class Order
 
       // String to time
       // Carbon $time_of_order - czas złożenia zamówienia
-      $time_of_order = \Carbon\Carbon::parse($first_status->date_add);
+      // $time_of_order = \Carbon\Carbon::parse($first_status->date_add);
+      $time_of_order = DateTime::createFromFormat('Y-m-d H:i:s', $first_status->date_add);
 
 
       /* KOLUMNA START ------------------------------------------------------ */
@@ -224,9 +229,13 @@ class Order
         array_push($pracownicy, $start_status->firstname." ".$start_status->lastname);
 
         // String to time
-        $start = \Carbon\Carbon::parse($start_status->date_add);
+        // $start = \Carbon\Carbon::parse($start_status->date_add);
+        $start = DateTime::createFromFormat('Y-m-d H:i:s', $start_status->date_add);
+
         // Różnica w minutach
-        $temp_order['opoznienie'] = $time_of_order->diffInminutes($start);
+        // $temp_order['opoznienie'] = $time_of_order->diffInminutes($start); // liczone przez Carbon
+        $temp_order['opoznienie'] = round(BusinessDaysCalculator::getWorkingHoursInSeconds($time_of_order, $start)/60);
+
       }
       else {
         $temp_order['start'] = "brak";
@@ -237,16 +246,18 @@ class Order
       /* PRZYGOTOWANIE DO WYDANIA ------------------------------------------- */
 
       // Przygotowanie do wydania = obliczane według statusów Kompletowanie na magazynie - W trakcie przetwarzania
-      $kompketowanie_status = $this->getAnyStatus($id, config('statusy.KOMPLETOWANIE_NA_MAGAZYNIE'));
+      $kompletowanie_status = $this->getAnyStatus($id, config('statusy.KOMPLETOWANIE_NA_MAGAZYNIE'));
 
-      if ($kompketowanie_status != null) {
-        $kompketowanie = \Carbon\Carbon::parse($kompketowanie_status->date_add);
-
-        $start = isset($start) ? $start : 0;
+      if ($kompletowanie_status != null) {
+        // $kompletowanie = \Carbon\Carbon::parse($kompletowanie_status->date_add);
+        $kompletowanie = DateTime::createFromFormat('Y-m-d H:i:s', $kompletowanie_status->date_add);
+        $start = isset($start) ? $start : DateTime::createFromFormat('Y-m-d H:i:s', '1900-01-01 00:00:00');
+        // dd($kompletowanie);
         // przygotowanie_do_wydania = Kompletowanie na magazynie - W trakcie przetwarzania
-        $temp_order['przygotowanie_do_wydania'] = $kompketowanie->diffInminutes($start);
+        // $temp_order['przygotowanie_do_wydania'] = $kompletowanie->diffInminutes($start);
+        $temp_order['przygotowanie_do_wydania'] = round(BusinessDaysCalculator::getWorkingHoursInSeconds($start, $kompletowanie)/60);
         // $temp_order['pracownik_3'] = $kompketowanie_status->firstname." ".$kompketowanie_status->lastname;
-        array_push($pracownicy, $kompketowanie_status->firstname." ".$kompketowanie_status->lastname);
+        array_push($pracownicy, $kompletowanie_status->firstname." ".$kompletowanie_status->lastname);
       }
       else {
         $temp_order['przygotowanie_do_wydania'] = null;

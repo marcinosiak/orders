@@ -3,7 +3,7 @@
 @section('content')
   <h4 class="my-3">Wydajność zamówień</h4>
 
-  <form action="{{url('zakres')}}" method="post">
+  <form action="{{url('zakres')}}" method="post" target="_self">
     <div class="input-append date form_date">
         <label for="from_date">data od:</label>
         <input size="13" type="text" value="" class="dtp" name="from_date" id="from_date" data-date-format="yyyy-mm-dd hh:ii:ss">
