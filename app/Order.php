@@ -157,7 +157,7 @@ class Order
         $time_first_status = \Carbon\Carbon::parse($array_of_statuses[$i]->date_add);
         $time_second_status = \Carbon\Carbon::parse($array_of_statuses[$i+1]->date_add);
         // $time += $time_first_status->diffInminutes($time_second_status);
-        $time += BusinessDaysCalculator::getWorkingHoursInSeconds($time_first_status, $time_second_status)/60;
+        $time += BusinessDaysCalculator::getWorkingHoursInSeconds($time_first_status, $time_second_status);
       }
 
       return round($time);
@@ -234,7 +234,7 @@ class Order
 
         // Różnica w minutach
         // $temp_order['opoznienie'] = $time_of_order->diffInminutes($start); // liczone przez Carbon
-        $temp_order['opoznienie'] = round(BusinessDaysCalculator::getWorkingHoursInSeconds($time_of_order, $start)/60);
+        $temp_order['opoznienie'] = BusinessDaysCalculator::getWorkingHoursInSeconds($time_of_order, $start);
 
       }
       else {
@@ -251,11 +251,18 @@ class Order
       if ($kompletowanie_status != null) {
         // $kompletowanie = \Carbon\Carbon::parse($kompletowanie_status->date_add);
         $kompletowanie = DateTime::createFromFormat('Y-m-d H:i:s', $kompletowanie_status->date_add);
-        $start = isset($start) ? $start : DateTime::createFromFormat('Y-m-d H:i:s', '1900-01-01 00:00:00');
+        $start = isset($start) ? $start : DateTime::createFromFormat('Y-m-d H:i:s', '1970-01-01 00:00:00');
         // dd($kompletowanie);
         // przygotowanie_do_wydania = Kompletowanie na magazynie - W trakcie przetwarzania
         // $temp_order['przygotowanie_do_wydania'] = $kompletowanie->diffInminutes($start);
-        $temp_order['przygotowanie_do_wydania'] = round(BusinessDaysCalculator::getWorkingHoursInSeconds($start, $kompletowanie)/60);
+        $temp_order['przygotowanie_do_wydania'] = BusinessDaysCalculator::getWorkingHoursInSeconds($start, $kompletowanie);
+        // if ($przygotowanie_do_wydania < 60) {
+        //   $temp_order['przygotowanie_do_wydania'] = '< 1';
+        // }
+        // else {
+        //   $temp_order['przygotowanie_do_wydania'] = round($przygotowanie_do_wydania / 60);
+        // }
+
         // $temp_order['pracownik_3'] = $kompketowanie_status->firstname." ".$kompketowanie_status->lastname;
         array_push($pracownicy, $kompletowanie_status->firstname." ".$kompletowanie_status->lastname);
       }

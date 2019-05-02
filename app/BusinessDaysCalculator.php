@@ -70,6 +70,7 @@ class BusinessDaysCalculator
           [self::BUSINESS_START, self::BUSINESS_END], // Pt
           null //Sob
       ];
+      // var_dump($start->format('Y-m-d'));
       // dd($start);
       // dd($end);
     	$seconds = 0; // Total working seconds
@@ -86,6 +87,8 @@ class BusinessDaysCalculator
     		// Get the current Weekday.
     		$today_weekday = date('w', $today);
     		// Skip to next day if no hours set for weekday.
+    		// if (!self::isThatDateWorkingDay($start->format('Y-m-d')) || !self::isThatDateWorkingDay($end->format('Y-m-d'))) continue;
+    		// if (!isset($working_hours[$today_weekday][0]) || !isset($working_hours[$today_weekday][1])) continue;
     		if (!isset($working_hours[$today_weekday][0]) || !isset($working_hours[$today_weekday][1])) continue;
     		// Set the office hours start/finish.
     		$today_start = $working_hours[$today_weekday][0];
@@ -96,7 +99,12 @@ class BusinessDaysCalculator
     		// Add to total seconds.
     		$seconds += $today_end - $today_start;
     	}
-    	return $seconds;
+
+      if ($seconds < 60)
+    	  return round($seconds/60, 1);
+      else
+        return round($seconds/60);
+
     }
 
 
