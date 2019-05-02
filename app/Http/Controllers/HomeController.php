@@ -105,7 +105,7 @@ class HomeController extends Controller
                              FROM (SELECT id_order FROM ps_orders WHERE date_add >= ? AND date_add <= ? ORDER BY id_order) o
                              JOIN ps_order_history oh ON o.id_order = oh.id_order
                              LEFT JOIN ps_employee e ON oh.id_employee = e.id_employee
-                             ORDER BY o.id_order DESC, oh.date_add DESC;
+                             ORDER BY o.id_order DESC, oh.date_add;
                             ', array($request->from_date, $request->to_date)
        );
 
